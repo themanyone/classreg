@@ -10,9 +10,22 @@ Object-oriented C Class Factory Methods
     * Model Facades for Proxying in-line functions
     * Automatic reference counting and cleanup
 
+Build instructions
+    
+    Requires Anch to build, but not to run.
+    Get it from https://github.com/themanyone/anch
+
+# make shared
+# ./test
+
+Docs?
+
 Should probably just look at the code.
 
-Example: (Doesn't look much like C, does it).
+Easy example (doesn't look much like C, does it).
+
+Can be mixed with "regular" C code though because it is C
+Compiles to C.
 
 // testclass
 IMPLEMENTS (INFO, SET_INTS)
@@ -53,6 +66,7 @@ class (int testclass2, ...)
     end_class
     return ret
 
+int main  void
     //~ initialize Data Access Objects (DAO) and class database
     use_classes
         
