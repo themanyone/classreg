@@ -1,3 +1,4 @@
+//usr/bin/chmod -x "$0"; exit
 /* classreg.c
  * 
  * Copyright (C) 2016 by Henry Kroll III, www.thenerdshow.com 

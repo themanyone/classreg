@@ -1,3 +1,4 @@
+//usr/bin/chmod -x "$0"; exit
 /* classreg.h
  * 
  * Copyright (C) 2016 by Henry Kroll III, www.thenerdshow.com 
@@ -17,7 +18,7 @@
  * MA 02110-1301, USA.
  * 
  */
-#define DEBUG 1
+#define DEBUG 0
 #ifndef CLASSREG
 #define CLASSREG
 #include <stdio.h>
@@ -26,9 +27,9 @@
 #include <stdlib.h>
 //~ class prototypes
 void ClInstance (int methods,...);
-
 //~ exposed public methods
-enum {_CREATE, _DESTROY, _INFO, _APPEND, _INSERT};
+enum classMethods {_CREATE, _DESTROY, _INFO, _APPEND, _INSERT};
+#define IMPLEMENTS(a,...) enum {a=__LINE__,__VA_ARGS__}
 #define _STR(a) #a
 #define STR(a) _STR(a)
 //~ rudimentary error handling
@@ -37,9 +38,8 @@ enum {_CREATE, _DESTROY, _INFO, _APPEND, _INSERT};
     perror(#a); \
     exit (1); }
 //~ Model Facades for Proxying in-line functions
-int _id;
-#define ForEach(s, t) for (_id=0;(t = s[_id]);_id++)
-#define split(b,c) for(_item=strtok(b,c);_item;(_item=strtok(NULL,c)))
+#define forEach(s, t) for (int index=0;(t = s[index]);index++)
+#define split(b,c,ci) for(ci=strtok(b,c);ci;(ci=strtok(NULL,c)))
 #define FREE(a) if(a){free(a);a=NULL; \
     INFO(#a" freed.\n"); \
     }
@@ -48,15 +48,14 @@ int _id;
 #define ERR(...) {\
     fprintf(stderr,"err: " __VA_ARGS__); \
     exit(1);}
-#define int_item *((int*)_item)
-#define char_item (char*)_item
+
 #define endl puts("");
 // a random integer within specified range (MSDN)
 #define getrandom(min, max) \
     ((rand()%(int)(((max) + 1)-(min)))+ (min))
 //~ subclass the function object to make class objects
 #define class(a,...) a(int methods, __VA_ARGS__)
-#define use_classes void *_classes_used=NULL; void *_item;
+#define use_classes void *_classes_used=NULL;
 #define public va_list ap; va_start(ap,methods);switch
 #define method case
 #define param(a,b) b a=va_arg(ap,b);

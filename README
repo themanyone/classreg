@@ -1,27 +1,20 @@
-//usr/local/bin/anch -Llibs -lclassreg -run $0 beer; exit 0
-/* forEach.c
- *
- * Copyright (C) 2012, 2016 by Henry Kroll III, www.thenerdshow.com
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-#include "classreg.h"
-//~ Abstract Factory Method invocations
-use_classes; 
-new_array_factory(char) 
-new_array_factory(int) 
-//{ little test class
+Object-oriented C Class Factory Methods
+
+    * Class and Method macros
+    * String array handling, creation, destruction
+    * String split, forEach
+    * Factory Methods and reusable class templates
+    * Data Access Objects (DAO) and class database
+    * Reusable bootstrapped reference counting
+    * Automatic registration of destructors
+    * Model Facades for Proxying in-line functions
+    * Automatic reference counting and cleanup
+
+Should probably just look at the code.
+
+Example: (Doesn't look much like C, does it).
+
+// testclass
 IMPLEMENTS (INFO, SET_INTS)
 class (void testclass, ...)
     public  methods
@@ -35,8 +28,8 @@ class (void testclass, ...)
             int *item; forEach  iArray, item  *item=getrandom  12,24
             break
     end_class
-//}
-//{ class (int testclass2, ...) // extends testclass
+
+// testclass2 extends testclass
 IMPLEMENTS (SET_VAR, GET_VAR)
 class (int testclass2, ...)
     static int ret
@@ -53,16 +46,13 @@ class (int testclass2, ...)
         method GET_VAR:
             printf  "My value is %i\n",ret
             break
-        default:
+        default: // extend test class here
             param  iArray, int**
             testclass  methods, iArray
             printf  "Test Class Extended.\n"
     end_class
     return ret
-//}
 
-//{ class(main)
-int main  void
     //~ initialize Data Access Objects (DAO) and class database
     use_classes
         
@@ -93,4 +83,3 @@ int main  void
     forEach  cArray, s  puts  s  ;endl
     
     return 0 //no cleanup necessary!
-//} main
