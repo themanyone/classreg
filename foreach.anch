@@ -1,0 +1,96 @@
+//usr/local/bin/anch -Llibs -lclassreg -run $0 beer; exit 0
+/* ForEach.c
+ *
+ * Copyright (C) 2012, 2016 by Henry Kroll III, www.thenerdshow.com
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+#include "classreg.h"
+//~ Abstract Factory Method invocations
+use_classes; 
+new_array_factory(char) 
+new_array_factory(int) 
+//{ little test class
+enum { INFO, SET_INTS } 
+class (void testclass, ...)
+    public  methods
+        method INFO:
+            printf  "*************************\n"
+            printf  "* Test class activated. *\n"
+            printf  "*************************\n"
+            break
+        method SET_INTS:
+            param  iArray, int**
+            int *item; ForEach  iArray, item  *item=getrandom  12,24
+            break
+    end_class
+//}
+//{ class (int testclass2, ...)
+enum { SET_VAR=2, GET_VAR } 
+class (int testclass2, ...)
+    static int ret
+    public  methods
+        method INFO:
+            printf  "**************************\n"
+            printf  "* Test class2 activated. *\n"
+            printf  "**************************\n"
+            break
+        method SET_VAR:
+            param  var, int
+            ret = var
+            break
+        method GET_VAR:
+            printf  "My value is %i\n",ret
+            break
+        default:
+            param  iArray, int**
+            testclass  methods, iArray
+            printf  "Test Class Extended.\n"
+    end_class
+    return ret
+//}
+
+//{ class(main)
+int main  void
+    //~ initialize Data Access Objects (DAO) and class database
+    use_classes
+        
+    ClInstance  _INFO  //optionally say what we are doing
+    testclass  INFO    //using the INFO methods
+    testclass2  SET_VAR,15
+    //~ create a pre-defined array and string
+    char *array[] ="This is","an","array.",NULL
+    char test[25]="This is a string."
+    int length=5,j=0//~ counter
+    //~ create a few dynamnic arrays
+    new_array  char, cArray, length, testclass2(GET_VAR)
+    new_array  int , iArray, length, 1
+    
+    //~ populate one with ints
+    testclass2  SET_INTS,iArray
+
+    //~ print out a pre-defined array we made earlier
+    char *s; ForEach  array, s  puts  s  ;endl
+    
+    //~ cut a string into several parts
+    split  test," "
+        //~ insert the pieces into a dynamic array
+        sprintf  cArray[j],"%i [%s]",*iArray[j],char_item  ;j++
+    FREE  cArray[j]  //~ NULL-terminate the end
+    
+    //~ print out the final array
+    ForEach  cArray, s  puts  s  ;endl
+    
+    return 0 //no cleanup necessary!
+//} main

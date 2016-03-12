@@ -1,0 +1,100 @@
+/* classreg.c
+ * 
+ * Copyright (C) 2016 by Henry Kroll III, www.thenerdshow.com 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ * 
+ */
+#include "classreg.h"
+//~ we don't need the subclassed return here
+#undef return
+
+class (void *DynList, ...)
+    typedef struct DynList
+        void *object
+        struct DynList *next
+    sDynList_t,*psDynList_t
+    void **this=NULL
+    public  methods
+        method _INFO:
+            break
+        method _CREATE:
+        method _APPEND:
+            param  this, void**
+            param  ptr, void *
+            psDynList_t newClass,head=*this
+            TRYTO  newClass=malloc(sizeof (sDynList_t))
+            newClass->object=ptr
+            newClass->next=head
+            INFO  "psDynList_t registered @ %p\n",ptr
+            *this=newClass
+            break
+        method _DESTROY:
+            param  this, void**
+            psDynList_t psDynlist,tmp=*this
+            int count=0
+            while  (psDynlist=tmp)
+                tmp=tmp->next
+                FREE  psDynlist
+            INFO  "%i list objects Destroyed\n",count
+        default:
+            break
+    end_class
+    return this
+    
+//~ bootstrapped reference counting class
+class (void ClInstance, ...)
+    typedef void (Func_t)(void**,int)
+    //~ register objects with their destructor
+    typedef struct Class
+        void *object
+        Func_t *destructor
+        int sz
+        struct Class *next
+    sClass_t,*pClass_t
+    public  methods
+        method _INFO:
+            for  int i=35;i--;  printf  "*"  ;endl
+            printf  "* This program implements classes.*\n"
+            for  int i=35;i--;  printf  "*"  ;endl
+            break
+        method _CREATE:
+            param  this, void**
+            param  ptr, void *
+            param  destructor, Func_t *
+            param  sz, int
+            pClass_t newClass,head=*this
+            TRYTO  newClass=malloc(sizeof (sClass_t))
+            newClass->object=ptr
+            newClass->destructor=destructor
+            newClass->sz=sz
+            newClass->next=head
+            INFO  "Class of %i members registered @ %p\n",sz,ptr
+            *this=newClass
+            break
+        method _DESTROY:
+            param  this, void**
+            pClass_t pClass,tmp=*this
+            int count=0
+            while  (pClass=tmp)  //call the registered destructor
+                tmp->destructor(tmp->object, tmp->sz)
+                tmp=tmp->next
+                FREE  pClass
+                count++
+            INFO  "%i classes Destroyed\n",count
+            break
+        default:
+            INFO  "Default constructor\n"
+    end_class

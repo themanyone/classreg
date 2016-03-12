@@ -1,0 +1,2 @@
+make clean && make shared
+LD_LIBRARY_PATH=libs ./foreach
